@@ -1,3 +1,54 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@property --border-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes border {
+  to {
+    --border-angle: 360deg;
+  }
+}
+
+.animate-border {
+  animation: border 4s linear infinite;
+}
+
+.input {
+  @apply w-full bg-black/60 border border-white/10 rounded-lg py-2 pl-10 pr-4 
+  text-white placeholder:text-white/40 
+  focus:ring-2 focus:ring-white/20 focus:border-white/20 
+  backdrop-blur-md transition-all duration-300;
+}
+
+.auth-input-icon {
+  @apply absolute left-3 top-1/2 -translate-y-1/2 
+  text-white/40 size-5 transition-colors duration-300;
+}
+
+.auth-input-label {
+  @apply block text-sm font-medium text-white/80 mb-2 tracking-wide;
+}
+
+.auth-badge {
+  @apply inline-flex items-center px-3 py-1 text-xs font-medium rounded-full 
+  bg-white/10 border border-white/10 text-white/80 
+  backdrop-blur-md;
+}
+
+.auth-btn {
+  @apply w-full bg-white text-black rounded-lg py-2.5 font-semibold
+  hover:bg-white/90 active:scale-[0.98]
+  focus:ring-2 focus:ring-white/30
+  transition-all duration-300 shadow-lg shadow-white/5;
+}
+
+.auth-link {
+  @apply px-4 py-2 inline-block bg-white/5 border border-white/10 
+  rounded-lg text-white/70 hover:text-white hover:bg-white/10
+  text-sm transition-all duration-300;
+}
