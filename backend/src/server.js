@@ -6,8 +6,7 @@ import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
 import { connectDB } from "./lib/db.js";
 import cors from "cors";
-
-const app = express();
+import { app, server } from "./lib/socket.js";
 
 const PORT = ENV.PORT || 3000;
 
