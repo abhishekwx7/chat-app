@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import { useChatStore } from "../store/useChatStore";
 import ChatHeader from "./ChatHeader";
@@ -12,11 +12,21 @@ function ChatContainer() {
 
   const { authUser } = useAuthStore();
 
+  const messageEndRef = useRef(null);
+
   useEffect(() => {
     if (selectedUser?._id) {
       getMessagesByUserId(selectedUser._id);
     }
   }, [selectedUser, getMessagesByUserId]);
+
+  useEffect(() => {
+    if (messageEndRef.current) {
+      messageEndRef.current.scrollIntoView({
+        behavior: "smooth",
+      });
+    }
+  }, [messages]);
 
   return (
     <div className="flex flex-col h-full bg-black">
@@ -59,12 +69,18 @@ function ChatContainer() {
                         isSender ? "text-black/50" : "text-white/40"
                       }`}
                     >
-                      {new Date(msg.createdAt).toISOString().slice(11, 16)}
+                      {new Date(msg.createdAt).toLocaleTimeString(undefined, {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                     </p>
                   </div>
                 </div>
               );
             })}
+
+            {/* Scroll target */}
+            <div ref={messageEndRef} />
           </div>
         ) : isMessagesLoading ? (
           <MessagesLoadingSkeleton />
