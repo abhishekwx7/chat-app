@@ -1,10 +1,12 @@
 import { useEffect } from "react";
 import { useChatStore } from "../store/useChatStore";
 import UsersLoadingSkeleton from "./UsersLoadingSkeleton";
+import { useAuthStore } from "../store/useAuthStore";
 
 function ContactList() {
   const { getAllContacts, allContacts, setSelectedUser, isUsersLoading } =
     useChatStore();
+  const { onlineUsers } = useAuthStore();
 
   useEffect(() => {
     getAllContacts();
@@ -13,36 +15,26 @@ function ContactList() {
   if (isUsersLoading) return <UsersLoadingSkeleton />;
 
   return (
-    <div className="space-y-2">
+    <>
       {allContacts.map((contact) => (
         <div
           key={contact._id}
+          className="bg-cyan-500/10 p-4 rounded-lg cursor-pointer hover:bg-cyan-500/20 transition-colors"
           onClick={() => setSelectedUser(contact)}
-          className="bg-black border border-white/10 p-4 rounded-xl cursor-pointer hover:bg-white/5 transition-all duration-200"
         >
           <div className="flex items-center gap-3">
-            {/* TODO: MAKE IT WORK WITH SOCKET */}
-            <div className="avatar online">
-              <div className="size-12 rounded-full ring-1 ring-white/10 overflow-hidden">
-                <img
-                  src={contact.profilePic || "/avatar.png"}
-                  alt={contact.fullName}
-                />
+            <div
+              className={`avatar ${onlineUsers.includes(contact._id) ? "online" : "offline"}`}
+            >
+              <div className="size-12 rounded-full">
+                <img src={contact.profilePic || "/avatar.png"} />
               </div>
             </div>
-
-            <div className="flex flex-col min-w-0">
-              <h4 className="text-white font-medium truncate">
-                {contact.fullName}
-              </h4>
-
-              <span className="text-xs text-white/40">Available to chat</span>
-            </div>
+            <h4 className="text-slate-200 font-medium">{contact.fullName}</h4>
           </div>
         </div>
       ))}
-    </div>
+    </>
   );
 }
-
 export default ContactList;

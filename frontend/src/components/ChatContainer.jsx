@@ -11,7 +11,6 @@ function ChatContainer() {
     useChatStore();
 
   const { authUser } = useAuthStore();
-
   const messageEndRef = useRef(null);
 
   useEffect(() => {
@@ -21,65 +20,57 @@ function ChatContainer() {
   }, [selectedUser, getMessagesByUserId]);
 
   useEffect(() => {
-    if (messageEndRef.current) {
-      messageEndRef.current.scrollIntoView({
-        behavior: "smooth",
-      });
-    }
+    messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   return (
-    <div className="flex flex-col h-full bg-black">
+    <>
       <ChatHeader />
 
-      <div className="flex-1 px-6 py-8 overflow-y-auto">
+      <div className="flex-1 px-6 overflow-y-auto py-8 bg-black">
         {messages.length > 0 && !isMessagesLoading ? (
           <div className="max-w-3xl mx-auto space-y-6">
-            {messages.map((msg) => {
-              const isSender = msg.senderId === authUser._id;
-
-              return (
+            {messages.map((msg) => (
+              <div
+                key={msg._id}
+                className={`chat ${
+                  msg.senderId === authUser._id ? "chat-end" : "chat-start"
+                }`}
+              >
                 <div
-                  key={msg._id}
-                  className={`chat ${isSender ? "chat-end" : "chat-start"}`}
+                  className={`chat-bubble relative border ${
+                    msg.senderId === authUser._id
+                      ? "bg-white text-black border-white"
+                      : "bg-black text-white border-white/15"
+                  }`}
                 >
-                  <div
-                    className={`chat-bubble relative border shadow-sm ${
-                      isSender
-                        ? "bg-white text-black border-white"
-                        : "bg-zinc-900 text-white border-white/10"
+                  {msg.image && (
+                    <img
+                      src={msg.image}
+                      alt="Shared"
+                      className="rounded-xl h-48 object-cover mb-2"
+                    />
+                  )}
+
+                  {msg.text && <p className="mt-2 break-words">{msg.text}</p>}
+
+                  <p
+                    className={`text-xs mt-1 flex items-center gap-1 ${
+                      msg.senderId === authUser._id
+                        ? "text-black/50"
+                        : "text-white/40"
                     }`}
                   >
-                    {msg.image && (
-                      <img
-                        src={msg.image}
-                        alt="Shared"
-                        className="rounded-xl h-48 object-cover mb-2"
-                      />
-                    )}
-
-                    {msg.text && (
-                      <p className="mt-1 break-words leading-relaxed">
-                        {msg.text}
-                      </p>
-                    )}
-
-                    <p
-                      className={`text-[11px] mt-2 opacity-60 flex items-center gap-1 ${
-                        isSender ? "text-black/50" : "text-white/40"
-                      }`}
-                    >
-                      {new Date(msg.createdAt).toLocaleTimeString(undefined, {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </p>
-                  </div>
+                    {new Date(msg.createdAt).toLocaleTimeString(undefined, {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </p>
                 </div>
-              );
-            })}
+              </div>
+            ))}
 
-            {/* Scroll target */}
+            {/* 👇 scroll target */}
             <div ref={messageEndRef} />
           </div>
         ) : isMessagesLoading ? (
@@ -90,7 +81,7 @@ function ChatContainer() {
       </div>
 
       <MessageInput />
-    </div>
+    </>
   );
 }
 
