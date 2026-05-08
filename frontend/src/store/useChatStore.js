@@ -56,24 +56,4 @@ export const useChatStore = create((set, get) => ({
       set({ isMessagesLoading: false });
     }
   },
-
-  sendMessage: async (messageData) => {
-    const { selectedUser, messages } = get();
-    const { authUser } = useAuthStore.getState();
-
-    const tempId = `temp-${Date.now()}`;
-
-    const optimisticMessage = {
-      _id: tempId,
-      senderId: authUser._id,
-      receiverId: selectedUser._id,
-      text: messageData.text,
-      image: messageData.image,
-      createdAt: new Date().toISOString(),
-      isOptimistic: true, // flag to identify optimistic messages (optional)
-    };
-
-    // immidetaly update the ui by adding the message
-    set({ messages: [...messages, optimisticMessage] });
-  },
 }));
